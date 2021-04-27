@@ -23,3 +23,7 @@ To update database:
    <code>clld initdb --glottolog PATH/TO/glottolog/glottolog/ --cldf PATH/TO/northeuralex/cldf/cldf-metadata.json development.ini</code>
 3. Rerun pserve 
 <code>pserve development.ini</code>
+
+
+Glottolog files can be found at:
+https://doi.org/10.5281/zenodo.596479
