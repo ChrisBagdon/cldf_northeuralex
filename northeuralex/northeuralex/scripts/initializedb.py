@@ -78,7 +78,7 @@ def main(args):
             concepticon_id=param['Concepticon_ID'],
             concepticon_name=param['Concepticon_Gloss']
         )
-    for form in args.cldf.iter_rows('FormTable', 'id', 'form', 'languageReference', 'parameterReference', 'source', 'Orthography', 'Status'):
+    for form in args.cldf.iter_rows('FormTable', 'id', 'form', 'languageReference', 'parameterReference', 'source', 'Orthography', 'Transliteration', 'Status'):
         vsid = (form['languageReference'], form['parameterReference'])
         vs = data['ValueSet'].get(vsid)
         if not vs:
@@ -101,15 +101,9 @@ def main(args):
             valueset=vs,
             raw_ipa=form['form'],
             orthography=form['Orthography'],
+            translit=form['Transliteration'],
             status=form['Status']
         )
-        '''data.add(
-            models.Word,
-            form['id'],
-            raw_ipa=form['form'],
-            norm_ipa=form['Orthography'],
-            status=form['Status']
-        )'''
 
     for (vsid, sid), pages in refs.items():
         DBSession.add(common.ValueSetReference(

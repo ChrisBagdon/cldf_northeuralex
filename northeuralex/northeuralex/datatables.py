@@ -67,7 +67,7 @@ class WordsDataTable(datatables.Values):
         res.extend([
             Col(self, 'form', model_col=Word.orthography, sTitle='Orthographic form'),
             Col(self, 'raw_ipa', model_col=Word.raw_ipa, sTitle='Automatically generated IPA'),
-            # Col(self, 'norm_ipa', model_col=Word.norm_ipa, sTitle='Normalised IPA'),
+            Col(self, 'transliteration', model_col=Word.translit, sTitle='Transliteration'),
             StatusCol(self, 'status', model_col=Word.status) ])
 
         return res

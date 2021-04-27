@@ -90,6 +90,6 @@ class Word(CustomModelMixin, Value):
 
     raw_ipa = Column(Unicode)
     orthography = Column(Unicode)
-    
+    translit = Column(Unicode)
 
     status = Column(Unicode)
