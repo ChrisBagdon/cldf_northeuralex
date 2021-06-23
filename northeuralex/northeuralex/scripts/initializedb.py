@@ -8,14 +8,19 @@ from clld.cliutil import Data, bibtex2source
 from clld.db.meta import DBSession
 from clld.db.models import common
 from clld.lib import bibtex
-
+from clld.db.util import compute_language_sources
 from clld_glottologfamily_plugin.util import load_families
 
 
 import northeuralex
 from northeuralex import models
 
-
+def add_sources(sources_file_path, session):
+    bibtex_db = bibtex.Database.from_file(sources_file_path, encoding='utf-8')
+    for record in bibtex_db:
+        session.add(bibtex2source(record))
+        yield record.id
+    session.flush()
 def main(args):
 
     assert args.glottolog, 'The --glottolog option is required!'
@@ -63,7 +68,8 @@ def main(args):
         data.add(common.Source, rec.id, _obj=bibtex2source(rec))
 
     refs = collections.defaultdict(list)
-
+    #source_ids = list(add_sources(args.cldf.bibpath, DBSession))
+    #sources = {s.id: s.pk for s in DBSession.query(common.Source)}
 
     for param in args.cldf.iter_rows('ParameterTable', 'id', 'concepticonReference', 'name'):
         data.add(
@@ -127,3 +133,4 @@ def prime_cache(args):
     This procedure should be separate from the db initialization, because
     it will have to be run periodically whenever data has been updated.
     """
+    compute_language_sources()
