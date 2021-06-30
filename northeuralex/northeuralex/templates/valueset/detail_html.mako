@@ -38,7 +38,7 @@
 	</div>
 </%def>
 
-<h2>Welcome to NorthEuraLex 0.9</h2>
+<h2>Welcome to NorthEuraLex 0.91</h2>
 
 <div class="home-main">
 	<p>
@@ -52,8 +52,8 @@
 		with the purpose of improving computational models of language relationship and language contact.
 	</p>
 	<p>
-		The current release version 0.9 covers a list of
-		<strong>1,016 concepts across 107 languages</strong> of Northern Eurasia, with a focus on Uralic and Indo-European,
+		The current release version 0.91 covers a list of
+		<strong>1,016 concepts across 122 languages</strong> of Northern Eurasia, with a focus on Uralic and Indo-European,
 		but also including all the language families conveniently summarized as Altaic/Transeurasian and Paleosiberian,
 		a selection of Caucasian languages, some major contact languages from adjacent families,
 		as well as the most well-known isolates of Northern Eurasia.
@@ -64,7 +64,7 @@
 		and are therefore guaranteed to contain many errors and inaccuracies.
 		Therefore, they are not adequate for use as a primary reference or data source for any of the languages concerned,
 		but only in computational frameworks where some noise can be dealt with.
-		The next major version (planned for autumn 2020) will contain at least 80 additional languages, a first batch of etymological 			annotations for the larger families, as well as many updates and corrections based on the feedback of experts and native 			speakers.
+		The next major version (planned for August 2021) will contain at least 15 additional languages, as well as many updates 			and corrections based on the feedback of experts and native 			speakers.
 	</p>
 </div>
 
@@ -72,6 +72,6 @@
 	<h3>How to cite the dataset</h3>
 	<p>
 		Dellert, J., Daneyko, T., Münch, A. et al. (2019): NorthEuraLex: a wide-coverage lexical database of Northern Eurasia. Language Resources & Evaluation. https://doi.org/10.1007/s10579-019-09480-6
-		(version 0.9).
+		(version 0.91).
 	</p>
 </div>

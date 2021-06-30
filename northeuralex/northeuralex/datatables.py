@@ -66,8 +66,8 @@ class WordsDataTable(datatables.Values):
 
         res.extend([
             Col(self, 'form', model_col=Word.orthography, sTitle='Orthographic form'),
-            Col(self, 'raw_ipa', model_col=Word.raw_ipa, sTitle='Automatically generated IPA'),
             Col(self, 'transliteration', model_col=Word.translit, sTitle='Transliteration'),
+            Col(self, 'raw_ipa', model_col=Word.raw_ipa, sTitle='Automatically generated IPA'),
             StatusCol(self, 'status', model_col=Word.status) ])
 
         return res
@@ -175,7 +175,7 @@ class StatusCol(Col):
         'sTitle': (
             '<abbr title="'
             'uncertain → certain, questionable → confirmed, unknown status'
-            '">Next action</abbr>'),
+            '">Status</abbr>'),
         'choices': [('certain', 'certain'),
                     ('uncertain', 'uncertain'),
                     ('questionable', 'questionable'),

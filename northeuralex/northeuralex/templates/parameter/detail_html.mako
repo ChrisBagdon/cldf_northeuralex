@@ -5,7 +5,7 @@
 
 
 
-<h2>${_('Parameter')} ${ctx.name}</h2>
+<h2>${_('Parameter')} ${ctx.concepticon_name}</h2>
 
 % if ctx.description:
 <p>${ctx.description}</p>
