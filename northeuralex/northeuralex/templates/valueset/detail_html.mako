@@ -71,7 +71,6 @@
 <div class="well">
 	<h3>How to cite the dataset</h3>
 	<p>
-		Dellert, J., Daneyko, T., Münch, A. et al. (2019): NorthEuraLex: a wide-coverage lexical database of Northern Eurasia. Language Resources & Evaluation. https://doi.org/10.1007/s10579-019-09480-6
-		(version 0.91).
+		Dellert, J., Daneyko, T., Münch, A. et al. NorthEuraLex: a wide-coverage lexical database of Northern Eurasia. Lang Resources & Evaluation 54, 273–301 (2020). https://doi.org/10.1007/s10579-019-09480-6
 	</p>
 </div>

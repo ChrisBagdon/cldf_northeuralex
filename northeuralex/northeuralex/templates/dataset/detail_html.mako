@@ -64,14 +64,13 @@
 		and are therefore guaranteed to contain many errors and inaccuracies.
 		Therefore, they are not adequate for use as a primary reference or data source for any of the languages concerned,
 		but only in computational frameworks where some noise can be dealt with.
-		The next major version, 0.92 (planned for August 2021), will contain 12 additional languages, as well as many updates and 			corrections based on the feedback of experts and native speakers.
+		The next major version, 0.92 (planned for August 2021), will contain 15 additional languages, as well as many updates and 			corrections based on the feedback of experts and native speakers.
 	</p>
 </div>
 
 <div class="well">
 	<h3>How to cite the dataset</h3>
 	<p>
-		Dellert, J., Daneyko, T., Münch, A. et al. Lang Resources & Evaluation (2019). https://doi.org/10.1007/s10579-019-09480-6
-		(version 0.91).
+		Dellert, J., Daneyko, T., Münch, A. et al. NorthEuraLex: a wide-coverage lexical database of Northern Eurasia. Lang Resources & Evaluation 54, 273–301 (2020). https://doi.org/10.1007/s10579-019-09480-6
 	</p>
 </div>
