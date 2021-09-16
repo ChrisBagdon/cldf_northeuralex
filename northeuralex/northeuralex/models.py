@@ -14,7 +14,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 
 from clld import interfaces
 from clld.db.meta import Base, CustomModelMixin
-from clld.db.models.common import Language, Parameter, ValueSet, Value
+from clld.db.models.common import Language, Parameter, ValueSet, Value, Contributor
 from clld.db.models import common
 
 from clld_glottologfamily_plugin.models import HasFamilyMixin
@@ -26,35 +26,17 @@ from clld_glottologfamily_plugin.models import HasFamilyMixin
 
 @implementer(interfaces.ILanguage)
 class Variety(CustomModelMixin, common.Language, HasFamilyMixin):
+    """
+    From Language this model inherits: id, name.
+    """
     pk = Column(Integer, ForeignKey('language.pk'), primary_key=True)
     glottocode = Column(Unicode)
     iso_code = Column(Unicode)
-    #family = Column(Unicode)
     subfamily = Column(Unicode)
-
-'''
-
-
-@implementer(interfaces.IParameter)
-class Concept(CustomModelMixin, common.Parameter):
-    pk = Column(Integer, ForeignKey('parameter.pk'), primary_key=True)
-    concepticon_id = Column(Unicode)
-
-
-@implementer(interfaces.ILanguage)
-class Doculect(CustomModelMixin, Language):
-    """
-    From Language this model inherits: id, name, latitude (float), longitude
-    (float).
-    """
-    pk = Column(Integer, ForeignKey('language.pk'), primary_key=True)
-    iso_code = Column(Unicode)
-    glotto_code = Column(Unicode)
-
-    #family = Column(Unicode)
-    subfamily = Column(Unicode)
-'''
-
+    sources_role = Column(Unicode)
+    data_entry = Column(Unicode)
+    consultants = Column(Unicode)
+    
 
 @implementer(interfaces.IParameter)
 class Concept(CustomModelMixin, Parameter):
@@ -93,3 +75,11 @@ class Word(CustomModelMixin, Value):
     translit = Column(Unicode)
 
     status = Column(Unicode)
+    
+# Dictionary for mapping Roles. Is imported by datatables.py, intializedb.py, and in templates.
+ROLES = {
+    # tuples of ('human readable header', 'column header in languages.csv')
+    #'0': ('Source', 'Sources'),
+    '1': ('Consultant', 'Consultants'),
+    '2': ('Data Entry', 'Data_Entry'),
+}

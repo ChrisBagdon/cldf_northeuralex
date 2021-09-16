@@ -7,6 +7,10 @@
 
 ${request.get_datatable('values', h.models.Value, language=ctx).render()}
 
+<% def split_input(str):
+	return (str).split(";")
+%>
+
 <%def name="sidebar()">
     ${util.codes()}
     <div style="clear: right;"> </div>
@@ -15,17 +19,40 @@ ${request.get_datatable('values', h.models.Value, language=ctx).render()}
         ${h.format_coordinates(ctx)}
         
     </%util:well>
-    <%util:well title="Alternative names">
-        ${util.dl_table(*[(i.description.capitalize(), i.name) for i in ctx.identifiers if i.type == 'name'])}
-    </%util:well>
-    % if ctx.sources:
+
+    
     <%util:well title="Sources">
         ${util.sources_list(sorted(list(ctx.sources), key=lambda s: s.name))}
         <div style="clear: both;"></div>
     </%util:well>
     <%util:well title="Contributors">
-    	<div style="clear: both;"></div>
+        % if ctx.sources_role:
+            <dt>${"Sources"}</dt>
+	    <dd>
+	        % for c in ctx.sources_role.split(";"):
+	            <li>${c.capitalize()}</li>
+	        % endfor
+	        </ul>
+	    </dd>
+	% endif
+	% if ctx.data_entry:
+	    <dt>${"Data Entry"}</dt>
+	    <dd>
+	        % for c in ctx.data_entry.split(";"):
+	            <li>${c}</li>
+	        % endfor
+	        </ul>
+	    </dd>
+	% endif
+	% if ctx.consultants:
+	    <dt>${"Consultants"}</dt>
+	    <dd>
+	        % for c in ctx.consultants.split(";"):
+	            <li>${c}</li>
+	        % endfor
+	        </ul>
+	    </dd>
+	% endif
     </%util:well>
     
-    % endif
 </%def>

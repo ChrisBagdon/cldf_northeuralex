@@ -11,9 +11,12 @@ from clld.lib import bibtex
 from clld.db.util import compute_language_sources
 from clld_glottologfamily_plugin.util import load_families
 
-
+import string
 import northeuralex
 from northeuralex import models
+
+roles = {'Sources':0, 'Consultants':1, 'Data_Entry':2}
+contributors = {}
 
 def add_sources(sources_file_path, session):
     bibtex_db = bibtex.Database.from_file(sources_file_path, encoding='utf-8')
@@ -50,8 +53,9 @@ def main(args):
         name=args.cldf.properties.get('dc:title'),
         description=args.cldf.properties.get('dc:bibliographicCitation'),
     )
-
-    for lang in args.cldf.iter_rows('LanguageTable', 'id', 'glottocode', 'ISO639P3code', 'Subfamily', 'name', 'latitude', 'longitude'):
+    # Language table section. Loads data according to cldf-metadata.json. Populates Language, Variety, and LanguageSource tables of SQL DB via the Variety model.
+    # Parses Contributor data for latere use.
+    for lang in args.cldf.iter_rows('LanguageTable', 'id', 'glottocode', 'ISO639P3code', 'Subfamily', 'name', 'latitude', 'longitude', 'Sources', 'Data_Entry', 'Consultants'):
         data.add(
             models.Variety,
             lang['id'],
@@ -61,16 +65,55 @@ def main(args):
             longitude=lang['longitude'],
             glottocode=lang['glottocode'],
             iso_code=lang['ISO639P3code'],
-            subfamily=lang['Subfamily']
+            subfamily=lang['Subfamily'],
+            sources_role=lang['Sources'],
+            data_entry=lang['Data_Entry'],
+            consultants=lang['Consultants']
         )
-
+        for role in ['Data_Entry', 'Consultants']:
+            if lang[role]:
+                if len(lang[role].split(';')) > 1:
+                    for entry in lang[role].split(';'):
+                        stripped_id = entry.replace('.', '').strip()
+                        if stripped_id in contributors.keys():
+                            contributors[stripped_id].append((stripped_id+role+lang['id'], entry.strip(), roles[role], lang['name']))
+                        else:
+                            contributors[stripped_id] = [(stripped_id+role+lang['id'], entry.strip(), roles[role], lang['name'])]
+                else:
+                    stripped_id = lang[role].replace('.', '').strip()
+                    if stripped_id in contributors.keys():
+                        contributors[stripped_id].append((stripped_id+role+lang['id'], lang[role], roles[role], lang['name']))
+                    else:
+                        contributors[stripped_id] = [(stripped_id+role+lang['id'], lang[role], roles[role], lang['name'])]
+    # Use data from language.csv to populate Contributor and ContributionContributor tables of SQLite db.
+    # Items will appear on the website in the order they are added to db, hence the sorting.                 
+    for contributor, contributions in sorted(contributors.items()):
+        c = data.add(
+            common.Contributor,
+            contributor,
+            # Unique ID built from contributor name + language ID + Role name
+            id=contributor,
+            name=contributions[0][1],
+            description=contributions[0][2]
+            )
+        for contribution in sorted(contributions, key=lambda con: con[1]):
+            con_pk = contribution[3]+contribution[0]
+            DBSession.add(common.ContributionContributor(
+                contribution_pk = con_pk,
+                contributor=c,
+                # Used to identify role
+                ord=contribution[2]))
+   
+            
+    # Built in functionality to add sources
     for rec in bibtex.Database.from_file(args.cldf.bibpath, lowercase=True):
         data.add(common.Source, rec.id, _obj=bibtex2source(rec))
 
     refs = collections.defaultdict(list)
     #source_ids = list(add_sources(args.cldf.bibpath, DBSession))
-    #sources = {s.id: s.pk for s in DBSession.query(common.Source)}
-
+    sources = {s.id: s.pk for s in DBSession.query(common.Source)}
+    
+    # Parameter table section. Loads data according to cldf-metadata.json. Populates Concept table of SQL DB via the Concept model.
     for param in args.cldf.iter_rows('ParameterTable', 'id', 'concepticonReference', 'name'):
         data.add(
             models.Concept,
@@ -84,7 +127,8 @@ def main(args):
             concepticon_id=param['Concepticon_ID'],
             concepticon_name=param['Concepticon_Gloss']
         )
-    for form in args.cldf.iter_rows('FormTable', 'id', 'form', 'languageReference', 'parameterReference', 'source', 'Orthography', 'Transliteration', 'Status'):
+    # Form table section. Loads data according to cldf-metadata.json. Populates ValueSet, ValueSetReference, and Word tables of SQL DB via ValueSet and Word models.
+    for form in args.cldf.iter_rows('FormTable', 'ID', 'Form', 'languageReference', 'parameterReference', 'Source', 'Orthography', 'Transliteration', 'Status'):
         vsid = (form['languageReference'], form['parameterReference'])
         vs = data['ValueSet'].get(vsid)
         if not vs:
@@ -96,16 +140,16 @@ def main(args):
                 parameter=data['Concept'][form['parameterReference']],
                 contribution=contrib,
             )
-        for ref in form.get('source', []):
+        for ref in form.get('Source', []):
             sid, pages = Sources.parse(ref)
             refs[(vsid, sid)].append(pages)
         data.add(
             models.Word,
-            form['id'],
-            id=form['id'],
-            name=form['form'],
+            form['ID'],
+            id=form['ID'],
+            name=form['Form'],
             valueset=vs,
-            raw_ipa=form['form'],
+            raw_ipa=form['Form'],
             orthography=form['Orthography'],
             translit=form['Transliteration'],
             status=form['Status']
@@ -133,4 +177,5 @@ def prime_cache(args):
     This procedure should be separate from the db initialization, because
     it will have to be run periodically whenever data has been updated.
     """
+    # This is required for loading sources in the side bar of the language pages
     compute_language_sources()
